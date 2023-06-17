@@ -18,23 +18,19 @@ async def progress_for_pyrogram(current, total, ud_type, message, start):
         elapsed_time = TimeFormatter(seconds=elapsed_time)
         estimated_total_time = TimeFormatter(seconds=estimated_total_time)
         progress = "[{0}{1}]".format(
-            ''.join(["█" for i in range(math.floor(percentage / 10))]),
-            ''.join(["░" for i in range(10 - math.floor(percentage / 10))])
+            ''.join(["█" for _ in range(math.floor(percentage / 10))]),
+            ''.join(["░" for _ in range(10 - math.floor(percentage / 10))]),
         )
         tmp = progress + PROGRESS.format(
             humanbytes(current),
             humanbytes(total),
-            humanbytes(speed) + "/s",
-            estimated_total_time if estimated_total_time != '' else "Calculating"
+            f"{humanbytes(speed)}/s",
+            estimated_total_time
+            if estimated_total_time != ''
+            else "Calculating",
         )
         try:
-            await message.edit_text(
-                text="{}\n{}".format(
-                    ud_type,
-                    tmp
-                ),
-                parse_mode='markdown'
-            )
+            await message.edit_text(text=f"{ud_type}\n{tmp}", parse_mode='markdown')
         except:
             pass
         await asyncio.sleep(5)
@@ -57,10 +53,12 @@ def TimeFormatter(seconds: float) -> str:
     minutes, seconds = divmod(int(seconds), 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = ((str(days) + "d, ") if days else "") + \
-        ((str(hours) + "h, ") if hours else "") + \
-        ((str(minutes) + "m, ") if minutes else "") + \
-        ((str(seconds) + "s, ") if seconds else "")
+    tmp = (
+        (f"{str(days)}d, " if days else "")
+        + (f"{str(hours)}h, " if hours else "")
+        + (f"{str(minutes)}m, " if minutes else "")
+        + (f"{str(seconds)}s, " if seconds else "")
+    )
     return tmp[:-2]
 
 

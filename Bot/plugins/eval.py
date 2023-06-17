@@ -9,9 +9,7 @@ from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
 async def eval(client: indi, message: Message):
     status_message = await message.reply_text("Processing ...")
     cmd = message.text.split(" ", maxsplit=1)[1]
-    reply_to_ = message
-    if message.reply_to_message:
-        reply_to_ = message.reply_to_message
+    reply_to_ = message.reply_to_message if message.reply_to_message else message
     old_stderr = sys.stderr
     old_stdout = sys.stdout
     redirected_output = sys.stdout = io.StringIO()
@@ -83,7 +81,7 @@ async def terminal(client: indi, message: Message):
                     ),
                     parse_mode="markdown",
                 )
-            output += "**{}**\n".format(code)
+            output += f"**{code}**\n"
             output += process.stdout.read()[:-1].decode("utf-8")
             output += "\n"
     else:
@@ -100,7 +98,7 @@ async def terminal(client: indi, message: Message):
                 etype=exc_type, value=exc_obj, tb=exc_tb
             )
             await message.reply_text(
-                """**Error:**\n```{}```""".format("".join(errors)),
+                f"""**Error:**\n```{"".join(errors)}```""",
                 parse_mode="markdown",
             )
             return

@@ -118,21 +118,21 @@ async def callback_authroize(client:Client, callback_query):
         id = callback_query.data.split('-')[1]
         id = int(id)
         get_u = await get_users(id)
-        mongp_user.find_one_and_delete({'user_id':int(id)})
+        mongp_user.find_one_and_delete({'user_id': id})
         try:
-            pic_user = await client.download_media(get_u[5], file_name=f"user.png")
+            pic_user = await client.download_media(get_u[5], file_name="user.png")
         except:
-            pass    
+            pass
         TEXTS = await user_check_template(get_u[0],get_u[1],get_u[2],get_u[3],get_u[4],get_u[6])
         try:
             notify = await client.send_photo(OWNER_ID, pic_user,caption="`-------`**ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ**`-------`\n\n"+ TEXTS,reply_markup=IKM([[IKB('ᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_auth-{id}'), IKB('ʜᴇʟᴘ', 'answer_help')]]))
         except:
-            notify = await client.send_message(OWNER_ID, text="`-------`**ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ**`-------`\n\n"+ TEXTS,reply_markup=IKM([[IKB('ᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_auth-{id}'), IKB('ʜᴇʟᴘ', 'answer_help')]]))    
+            notify = await client.send_message(OWNER_ID, text="`-------`**ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ**`-------`\n\n"+ TEXTS,reply_markup=IKM([[IKB('ᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_auth-{id}'), IKB('ʜᴇʟᴘ', 'answer_help')]]))
         try:
             await notify.copy(id)
         except:
             pass  
-        
+
     elif 'auth' in callback_query.data:
         if callback_query.from_user.id != OWNER_ID:
             await callback_query.answer("Oops You're not authorized to do this")
@@ -140,27 +140,27 @@ async def callback_authroize(client:Client, callback_query):
         id = callback_query.data.split('-')[1]
         id = int(id)
         get_u = await get_users(id)
-        mongp_user.insert_one({'user_id':id,'resolution':'480p','preset':'fast','audio_type':'aac','vcodec':'x264', 'crf':26})               
+        mongp_user.insert_one({'user_id':id,'resolution':'480p','preset':'fast','audio_type':'aac','vcodec':'x264', 'crf':26})
         try:
-            pic_user = await client.download_media(get_u[5], file_name=f"user.png")
+            pic_user = await client.download_media(get_u[5], file_name="user.png")
         except:
             pass   
-             
+
         TEXTS = await user_check_template(get_u[0],get_u[1],get_u[2],get_u[3],get_u[4],get_u[6])
         try:
             notify = await client.send_photo(OWNER_ID, pic_user,caption="`-------`**ᴀᴜᴛʜᴏʀɪᴢᴇᴅ**`-------`\n\n"+ TEXTS,reply_markup=IKM([[IKB('ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_unauth-{id}'), IKB('ʜᴇʟᴘ', 'answer_help')]]))
         except:
             notify = await client.send_message(OWNER_ID,text="`-------`**ᴀᴜᴛʜᴏʀɪᴢᴇᴅ**`-------`\n\n"+ TEXTS,reply_markup=IKM([[IKB('ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_unauth-{id}'), IKB('ʜᴇʟᴘ', 'answer_help')]]))
-            
+
         try:
             await notify.copy(id)
         except:
             pass    
-        
+
     elif 'request' in callback_query.data:
         id = callback_query.data.split('-')[1]
         get_u = await  get_users(id)
-        pic_user = await client.download_media(get_u[5], file_name=f"user.png")
+        pic_user = await client.download_media(get_u[5], file_name="user.png")
         TEXTS = await user_check_template(get_u[0],get_u[1],get_u[2],get_u[3],get_u[4],get_u[6])
         notify = await client.send_photo(OWNER_ID, pic_user,caption="`-------`**ʀᴇǫᴜᴇsᴛᴇᴅ ᴀᴜᴛʜᴏʀɪᴢᴇ**`-------`\n\n"+ TEXTS,reply_markup=IKM([[IKB('ᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_auth-{id}'), IKB('ᴜɴᴀᴜᴛʜᴏʀɪᴢᴇ',f'users_unauth-{id}')]]))     
 

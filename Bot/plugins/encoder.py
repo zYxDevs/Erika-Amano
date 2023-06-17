@@ -24,53 +24,49 @@ async def add_task(message):
         c_time = time.time()
         FT = time.time()
         try:
-            filepath = await message.download(progress=progress_for_pyrogram,progress_args=("**Downloading...**", msg, c_time))   
+            filepath = await message.download(progress=progress_for_pyrogram,progress_args=("**Downloading...**", msg, c_time))
             check_resolution = check_resolution_settings(message.from_user.id)
-            cmd = ffmpeg_settings(message.from_user.id, filepath, FT)  
+            cmd = ffmpeg_settings(message.from_user.id, filepath, FT)
             await msg.edit_text('**Encoding...**')
             try:
                 await ffmpeg_progress(cmd, filepath,f'progress-{FT}.txt',FT, msg, '**Encoding Started**\n\n')
             except Exception as e:
-                LOG.info(f'ERror while ffmpeg progress\n' +e)  
+                LOG.info(f'ERror while ffmpeg progress\n{e}')
             output = filepath.rsplit('.',1)[0]
-            if '.mkv' in filepath:
-                output = output+'_IA.mkv'    
-            else:
-                output = output+'_IA.mp4'       
-                
+            output = f'{output}_IA.mkv' if '.mkv' in filepath else f'{output}_IA.mp4'
             file_name = output.rsplit('/', 1)[1].replace('_IA', "")
             try: #MSG EDIT AND EDIT
-                await msg.edit(f'**Encoding Completed')   
-                file =  await msg.reply_document(output, caption=f"**{check_resolution}**", file_name=file_name)  
+                await msg.edit('**Encoding Completed')
+                file =  await msg.reply_document(output, caption=f"**{check_resolution}**", file_name=file_name)
             except Exception as e: 
-                LOG.info(f'Error while file sending\n'+e)  
+                LOG.info(f'Error while file sending\n{e}')
             try:
                 await file.copy(FILES_CHANNEL)
             except Exception as e: 
-                LOG.info(f'Error while file copy\n'+e)
-                
+                LOG.info(f'Error while file copy\n{e}')
+
             try: #FILE DELETE
                 os.remove(filepath)
                 os.remove(output)
                 os.remove(f'progress-{FT}.txt')
             except Exception as e: 
-                LOG.info(f'Error while removing files\n'+e)      
-           
+                LOG.info(f'Error while removing files\n{e}')      
+
             try: #MSG DELETE
                 await msg.delete() 
             except:
                 pass       
-                       
+
         except Exception as e: 
-            LOG.info(f'Error while line 56\n'+e)    
+            LOG.info(f'Error while line 56\n{e}')
     except Exception as e: 
-        LOG.info(f'Error while Line 58\n'+e)
-        
+        LOG.info(f'Error while Line 58\n{e}')
+
     try:
-        await on_task_complete()   
+        await on_task_complete()
     except Exception as e: 
-       # await on_task_complete()   
-        LOG.info(f'Error while task complete\n'+e) 
+       # await on_task_complete()
+        LOG.info(f'Error while task complete\n{e}') 
        
 
 

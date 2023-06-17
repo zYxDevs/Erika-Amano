@@ -8,22 +8,19 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, 
 def time_formatter(milliseconds: int) -> str:
     """Inputs time in milliseconds, to get beautified time,
     as string"""
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
+    seconds, milliseconds = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     weeks, days = divmod(days, 7)
     tmp = (
-        ((str(weeks) + "w:") if weeks else "")
-        + ((str(days) + "d:") if days else "")
-        + ((str(hours) + "h:") if hours else "")
-        + ((str(minutes) + "m:") if minutes else "")
-        + ((str(seconds) + "s:") if seconds else "")
+        (f"{str(weeks)}w:" if weeks else "")
+        + (f"{str(days)}d:" if days else "")
+        + (f"{str(hours)}h:" if hours else "")
+        + (f"{str(minutes)}m:" if minutes else "")
+        + (f"{str(seconds)}s:" if seconds else "")
     )
-    if tmp.endswith(":"):
-        return tmp[:-1]
-    else:
-        return tmp
+    return tmp[:-1] if tmp.endswith(":") else tmp
  
 def humanbytes(size):
     if size in [None, ""]:
@@ -56,15 +53,15 @@ async def ffmpeg_progress(cmd, file, progress, now, send_msg, ps_name,log=None):
             if int(speed) != 0:
                 some_eta = ((int(total_frames) - elapse) / speed) * 1000
                 progress_str = "**[{0}{1}]** `| {2}%\n\n`".format(
-                    "".join("█" for i in range(math.floor(per / 5))),
-                    "".join("" for i in range(20 - math.floor(per / 5))),
+                    "".join("█" for _ in range(math.floor(per / 5))),
+                    "".join("" for _ in range(20 - math.floor(per / 5))),
                     round(per, 2),
                 )
-                e_size = humanbytes(size) + " of ~" + humanbytes((size / per) * 100)
+                e_size = f"{humanbytes(size)} of ~{humanbytes(size / per * 100)}"
                 eta = time_formatter(some_eta)
                 try:
                     await send_msg.edit(f'{ps_name}\n{progress_str}' + f'GROSS: {e_size}\n\nETA: {eta}',reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Owner", url = 'https://t.me/sohailkhan_indianime')]]))
                 except Exception as e:
-                    LOG.warn('Error While Editing FFMPEG Status {e}')    
+                    LOG.warn('Error While Editing FFMPEG Status {e}')
                 if log != None:
                     await log.edit(f'{ps_name}\n\n{progress_str}' + f'**GROSS:** `{e_size}`\n**ETA:** `{eta}`')  
